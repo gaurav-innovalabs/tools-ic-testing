@@ -1,0 +1,7 @@
+## if required any python package do
+poetry add package_name --dev
+
+[NOTE:- need to mention here the command for doc's purpose]
+poetry add ipython --dev #@Gr
+..
+

@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "fastapi-tools-ic"
+version = "0.1.0"
+description = ""
+authors = ["Gaurav R <gaurav.r@innovalabs.tech>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+ipython = "^8.32.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
