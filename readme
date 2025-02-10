@@ -1,7 +1,16 @@
-## if required any python package do
+
+## do 
+poetry install
+
+
+## if required to add any python package do
 poetry add package_name --dev
 
 [NOTE:- need to mention here the command for doc's purpose]
 poetry add ipython --dev #@Gr
+poetry add pydantic #@Gr
+poetry add pydantic-settings #@Gr
+poetry add docstring_parser #@Gr
+poetry add google-search-results --dev #@Gr
 ..
 

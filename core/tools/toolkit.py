@@ -177,7 +177,10 @@ def tool_func(schema: type[BaseModel] | None = None, title: str = None, desc: st
             "enabled": True,
             "llm_tool": {},
         }
-        Toolkit.register(func.__name__, kwargs, tool_cls=func.__class__.__name__)
+        tool_cls = func.__qualname__.split(".")[0]
+        # if tool_cls not in Toolkit.__tools:# temp fix tool_func run 1st , lastly run @tool -> regester issue
+        #     Toolkit.__tools[tool_cls] = kwargs 
+        Toolkit.register(func.__name__, kwargs, tool_cls=tool_cls)
 
         @wraps(func)
         def wrapper(self: any, *args, **kwargs) -> any:

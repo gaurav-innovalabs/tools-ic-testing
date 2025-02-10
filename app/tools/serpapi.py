@@ -1,7 +1,7 @@
+import json
 from pydantic import BaseModel, Field
 
 from app.utils.package import install_package
-from core import logger
 from core.tools import Toolkit
 from core.tools.category import ToolCategory
 from core.tools.toolkit import tool, tool_func
@@ -27,7 +27,7 @@ class SerpApiTool(Toolkit):
     def api_key(self) -> str:
         return self.configuration.get("api_key", "")
 
-    @tool_func(SearchConfig, title="Search Google")
+    # @tool_func(SearchConfig, title="Search Google")
     def search_google(self, query: str, _config: dict):
         """
         search_google(query, _config)
@@ -49,18 +49,28 @@ class SerpApiTool(Toolkit):
         """
         try:
             from serpapi import GoogleSearch
+            params = {"q": query, "api_key": self.api_key, "num": 2}
 
-            with GoogleSearch({"q": query, "num": _config.get("num_results"), "api_key": self.api_key}) as search:
-                results = search.get_dict()
-                return results.get("organic_results", [])
+            search = GoogleSearch(params)
+            results = search.get_dict()
+
+            filtered_results = {
+                "search_results": results.get("organic_results", ""),
+                "recipes_results": results.get("recipes_results", ""),
+                "shopping_results": results.get("shopping_results", ""),
+                "knowledge_graph": results.get("knowledge_graph", ""),
+                "related_questions": results.get("related_questions", ""),
+            }
+
+            return json.dumps(filtered_results)
+
         except ImportError:
             install_package("google-search-results")
             self.search_google(query, _config)
         except Exception as e:
-            logger.exception(e)
             return {"error": str(e)}
 
-    @tool_func(SearchConfig, title="Search YouTube")
+    # @tool_func(SearchConfig, title="Search YouTube")
     def search_youtube(self, query: str, _config: dict):
         """
         Search for YouTube videos based on a query and configuration.
@@ -85,14 +95,21 @@ class SerpApiTool(Toolkit):
         """
         try:
             from serpapi import YoutubeSearch
+            params = {"search_query": query, "num": _config.get("num_results"), "api_key": self.api_key}
 
-            with YoutubeSearch({"q": query, "num": _config.get("num_results"), "api_key": self.api_key}) as search:
-                results = search.get_dict()
-                return results.get("videos", [])
+            search = YoutubeSearch(params)
+            results = search.get_dict()
+
+            filtered_results = {
+                "video_results": results.get("video_results", ""),
+                "movie_results": results.get("movie_results", ""),
+                "channel_results": results.get("channel_results", ""),
+            }
+
+            return json.dumps(filtered_results)
 
         except ImportError:
             install_package("google-search-results")
             self.search_youtube(query, _config)
         except Exception as e:
-            logger.exception(e)
             return {"error": str(e)}
